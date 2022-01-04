@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Process...</title>
+</head>
+
+<body>
+
+    <canvas id="myCanvas" width="852" height="480" style="background-image: url(Imgs/nen_1.jpg);"></canvas>
+
+    <script>
+        let paper = document.getElementById("myCanvas");
+        let pen = paper.getContext("2d");
+
+
+        function ngauNhien(min, max) {
+            return Math.floor(Math.random() * ((max + 1) - min)) + min;
+        }
+
+        function soAm() {
+            if (Math.random() < 0.5) {
+                return -1;
+            }
+            else {
+                return 1;
+            }
+        }
+
+
+        class Bird {
+            constructor(imgPath, rong, cao, rong_ht, cao_ht, soCot, soDong, a, b, x, y) {
+                this.rong = rong;
+                this.cao = cao;
+                this.rong_ht = rong_ht;
+                this.cao_ht = cao_ht;
+                this.soCot = soCot;
+                this.soDong = soDong;
+                this.cot = 0;
+                this.dong = 0;
+                this.x = x;
+                this.y = y;
+                this.a = a;
+                this.b = b;
+                this.birdImg = new Image();
+                this.birdImg.src = imgPath;
+            }
+
+            chimBay() {
+                pen.drawImage(this.birdImg, this.rong / this.soCot * this.cot, this.cao / this.soDong * this.dong, this.rong / this.soCot, this.cao / this.soDong, this.x, this.y, this.rong_ht / this.soCot, this.cao_ht / this.soDong);
+                // pen.drawImage(this.birdImg, this.x, this.y);
+                this.x = this.x + this.a;
+                this.y = this.y + this.b;
+                if (this.cot < this.soCot - 1) {
+                    this.cot++;
+                }
+                else {
+                    this.cot = 0;
+                    if (this.dong < this.soDong - 1) {
+                        this.dong++;
+                    }
+                    else {
+                        this.dong = 0;
+                    }
+                }
+            }
+        }
+
+
+        let birds = [];
+
+        function taoChim() {
+            let Id = ngauNhien(0, 9);
+            let BirdSizes = [
+                [492, 88, 250, 45, 4, 1],
+                [928, 465, 160, 80, 3, 2],
+                [1081, 290, 320, 86, 4, 2],
+                [784, 153, 320, 62, 4, 1],
+                [714, 134, 250, 47, 4, 1],
+                [792, 146, 330, 61, 4, 1],
+                [1269, 452, 270, 96, 4, 2],
+                [304, 74, 230, 56, 4, 1],
+                [791, 220, 500, 139, 7, 2],
+                [848, 125, 400, 59, 8, 1]
+            ];
+            let a = ngauNhien(3, 10) * soAm();
+            let b = ngauNhien(3, 10) * (-1);
+
+            let huongBay;
+            if (a < 0) {
+                huongBay = "trai";
+            }
+            else {
+                huongBay = "phai";
+            }
+            let imgPath = `Imgs/chim_${Id + 1}_${huongBay}.png`;
+
+            let rong = BirdSizes[Id][0];
+            let cao = BirdSizes[Id][1];
+            let rong_ht = BirdSizes[Id][2];
+            let cao_ht = BirdSizes[Id][3];
+            let soCot = BirdSizes[Id][4];
+            let soDong = BirdSizes[Id][5];
+            let x = ngauNhien(0, 852);
+            let y = 350;
+
+            let bird = new Bird(imgPath, rong, cao, rong_ht, cao_ht, soCot, soDong, a, b, x, y);
+            birds.push(bird);
+        }
+
+
+        function xuatHien(soChim) {
+            i = 0;
+            while (i < soChim) {
+                taoChim();
+                i++;
+            }
+        }
+
+        function chimTungCanh() {
+            for (let i = 0; i < birds.length; i++) {
+                birds[i].chimBay();
+            }
+        }
+
+
+
+        function capNhatChim() {
+            let i = 0;
+            while (i < birds.length) {
+                if (birds[i].x < (-100) || birds[i].x > 952 || birds[i].y < -100) {
+                    birds.splice(i, 1);
+                    i--;
+                }
+                i++;
+            }
+
+        }
+
+        let time = 0;
+        let delay = 10;
+
+        function tuDongTaoChim() {
+            time++;
+            if (time > delay) {
+                taoChim();
+                time = 0;
+            }
+
+        }
+
+
+        xuatHien(5);
+
+        function main() {
+            pen.clearRect(0, 0, paper.width, paper.height);
+            tuDongTaoChim();
+            capNhatChim();
+            chimTungCanh();
+            // capNhatChim();
+        }
+
+
+
+        setInterval(main, 100);
+
+
+
+
+
+    </script>
+
+
+</body>
+
+
+
+</html>

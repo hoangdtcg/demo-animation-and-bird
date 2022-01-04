@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="Animation.js"></script>
+
+</head>
+
+<body>
+<canvas id="myCanvas" width="1000" height="400" style="border: 1px solid #000000;"></canvas>
+<script>
+    let canvas = document.getElementById('myCanvas');
+    let anim1 = new Animation(canvas, 'Images/character.png', 4, 4);
+    let ninja = new Animation(canvas, 'Images/ninja.png', 4, 7);
+    let coin = new Animation(canvas, 'Images/coin.png', 1, 10);
+    let ben10 = new Animation(canvas, "Images/ben10.png", 2, 8);
+    let pika = new Animation(canvas, "Images/pikachu.png", 4, 4);
+
+    let x = 0;
+    let y = 0
+    let speed = 10;
+    let direction = "right"
+    pika.indexRow = 2;
+
+    const DOWN = 0;
+    const LEFT = 1;
+    const RIGHT = 2;
+    const UP = 3;
+
+    function loop() {
+        setInterval(function () {
+            canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+            pika.updateFrame();
+            pika.drawImage();
+            checkWall();
+            move();
+        }, 100);
+    }
+
+    function checkWall() {
+        if(pika.x > canvas.width){
+            pika.x = -10;
+        }
+
+        if(pika.y > canvas.height){
+            pika.y = -10;
+        }
+
+    }
+
+    loop();
+
+    function move() {
+        switch (direction) {
+            case "right":
+                pika.x += speed;
+                pika.indexRow = RIGHT;
+                break;
+            case "left":
+                pika.x -= speed;
+                pika.indexRow = LEFT;
+                break;
+            case "up":
+                pika.y -= speed;
+                pika.indexRow = UP;
+                break;
+            case "down":
+                pika.y += speed;
+                pika.indexRow = DOWN;
+                break;
+
+        }
+    }
+
+    function changeDirection(evt) {
+        switch (evt.key) {
+            case "a":
+            case "ArrowLeft":
+                direction = "left";
+                break;
+            case "d":
+            case "ArrowRight":
+                direction = "right";
+                break;
+            case "w":
+            case "ArrowUp":
+                direction = "up";
+                break;
+            case "s":
+            case "ArrowDown":
+                direction = "down";
+                break;
+
+        }
+    }
+
+    window.addEventListener("keydown", changeDirection)
+</script>
+</body>
+
+</html>
